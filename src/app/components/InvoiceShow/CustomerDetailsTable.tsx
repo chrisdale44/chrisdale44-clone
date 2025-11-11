@@ -18,7 +18,7 @@ const CustomerDetailsTable = ({
         <tr>
           <th>Billed to</th>
           <td>
-            {editMode ? (
+            {editMode && !invoice?.finalized ? (
               <CustomerAutocomplete
                 value={invoice.customer}
                 onChange={handleUpdateCustomer}

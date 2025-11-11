@@ -24,7 +24,7 @@ const InvoiceDetailsTable = ({
           <tr>
             <th>Invoice date</th>
             <td>
-              {editMode ? (
+              {editMode && !invoice?.finalized ? (
                 <DatePicker
                   selected={new Date(invoice.date)}
                   onChange={(date) => {
@@ -42,7 +42,7 @@ const InvoiceDetailsTable = ({
           <tr>
             <th>Deadline</th>
             <td>
-              {editMode ? (
+              {editMode && !invoice?.finalized ? (
                 <DatePicker
                   selected={new Date(invoice.deadline)}
                   onChange={(date) => {
@@ -60,29 +60,9 @@ const InvoiceDetailsTable = ({
           </tr>
         )}
         <tr>
-          <th>Paid</th>
-          <td className="capitalize">
-            {editMode ? (
-              <select
-                value={invoice.paid ? YES : NO}
-                onChange={(e) =>
-                  handleUpdateBoolean('paid', e.currentTarget.value === YES)
-                }
-              >
-                <option value={YES}>Yes</option>
-                <option value={NO}>No</option>
-              </select>
-            ) : invoice.paid ? (
-              YES
-            ) : (
-              NO
-            )}
-          </td>
-        </tr>
-        <tr>
           <th>Finalized</th>
           <td className="capitalize">
-            {editMode ? (
+            {editMode && !invoice?.finalized ? (
               <select
                 value={invoice.finalized ? YES : NO}
                 onChange={(e) =>
@@ -96,6 +76,26 @@ const InvoiceDetailsTable = ({
                 <option value={NO}>No</option>
               </select>
             ) : invoice.finalized ? (
+              YES
+            ) : (
+              NO
+            )}
+          </td>
+        </tr>
+        <tr>
+          <th>Paid</th>
+          <td className="capitalize">
+            {editMode ? (
+              <select
+                value={invoice.paid ? YES : NO}
+                onChange={(e) =>
+                  handleUpdateBoolean('paid', e.currentTarget.value === YES)
+                }
+              >
+                <option value={YES}>Yes</option>
+                <option value={NO}>No</option>
+              </select>
+            ) : invoice.paid ? (
               YES
             ) : (
               NO

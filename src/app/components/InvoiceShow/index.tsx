@@ -159,13 +159,13 @@ const InvoiceShow = () => {
           handleUpdateQuantity={handleUpdateQuantity}
         />
 
-        {editMode && (
+        {editMode && !invoice?.finalized ? (
           <input
             type="button"
             onClick={handleAddInvoiceLine}
             value={`Add product +`}
           />
-        )}
+        ) : null}
 
         <InvoiceTotals />
 

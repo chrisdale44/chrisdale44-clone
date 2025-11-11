@@ -22,7 +22,7 @@ const InvoiceLinesTable = ({
       Header: 'Product',
       accessor: 'product',
       Cell: ({ value, row }: { value: Product; row: any }) =>
-        editMode ? (
+        editMode && !invoice?.finalized ? (
           <ProductAutocomplete
             value={value}
             onChange={(product) => {
@@ -37,7 +37,7 @@ const InvoiceLinesTable = ({
       Header: 'Quantity',
       accessor: 'quantity',
       Cell: ({ value, row }: { value: number; row: any }) => {
-        return editMode ? (
+        return editMode && !invoice?.finalized ? (
           <input
             type="number"
             min="0"
