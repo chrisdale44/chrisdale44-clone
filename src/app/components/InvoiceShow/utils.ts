@@ -1,6 +1,10 @@
 import { Invoice } from 'types'
 import numeral from 'numeral'
 
+export const formatDate = (date: Date) => {
+  return date.toISOString().split('T')[0]
+}
+
 export const calculateTotal = (
   invoice: Invoice,
   key: 'unit_tax' | 'unit_price'

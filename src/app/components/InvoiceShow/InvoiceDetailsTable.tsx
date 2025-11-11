@@ -2,9 +2,8 @@ import { useContext } from 'react'
 import DatePicker from 'react-datepicker'
 import { InvoiceContext } from 'app/context'
 import { HandleUpdateDate, HandleUpdateBoolean } from './types'
-
-const YES = 'yes'
-const NO = 'no'
+import { YES, NO } from './constants'
+import { formatDate } from './utils'
 
 type InvoiceDetailsTableProps = {
   handleUpdateDate: HandleUpdateDate
@@ -28,8 +27,7 @@ const InvoiceDetailsTable = ({
                 <DatePicker
                   selected={new Date(invoice.date)}
                   onChange={(date) => {
-                    if (date)
-                      handleUpdateDate('date', date.toISOString().split('T')[0])
+                    if (date) handleUpdateDate('date', formatDate(date))
                   }}
                 />
               ) : (
@@ -46,11 +44,7 @@ const InvoiceDetailsTable = ({
                 <DatePicker
                   selected={new Date(invoice.deadline)}
                   onChange={(date) => {
-                    if (date)
-                      handleUpdateDate(
-                        'deadline',
-                        date.toISOString().split('T')[0]
-                      )
+                    if (date) handleUpdateDate('deadline', formatDate(date))
                   }}
                 />
               ) : (
