@@ -3,20 +3,14 @@ import { useParams } from 'react-router'
 import { useNavigate } from 'react-router-dom'
 import { useApi } from 'api'
 import { InvoiceContext } from '../../context'
-import { Invoice } from 'types'
 import InvoiceHeader from './InvoiceHeader'
 import CustomerDetailsTable from './CustomerDetailsTable'
 import InvoiceDetailsTable from './InvoiceDetailsTable'
 import InvoiceLinesTable from './InvoiceLinesTable'
 import InvoiceTotals from './InvoiceTotals'
 import FooterButtons from './FooterButtons'
-import {
-  HandleUpdateBoolean,
-  HandleUpdateDate,
-  HandleUpdateCustomer,
-  HandleUpdateProduct,
-  HandleUpdateQuantity,
-} from './types'
+import { useInvoiceHandlers } from 'app/hooks/useInvoiceHandlers'
+import { Invoice } from 'types'
 
 const InvoiceShow = () => {
   const { id } = useParams<{ id: string }>()
@@ -24,6 +18,13 @@ const InvoiceShow = () => {
   const navigate = useNavigate()
   const [invoice, setInvoice] = useState<Invoice>()
   const [editMode, setEditMode] = useState<boolean>(false)
+  const {
+    handleUpdateDate,
+    handleUpdateBoolean,
+    handleUpdateCustomer,
+    handleUpdateProduct,
+    handleUpdateQuantity,
+  } = useInvoiceHandlers(setInvoice)
 
   useEffect(() => {
     api.getInvoice(id).then(({ data }) => {
@@ -35,83 +36,9 @@ const InvoiceShow = () => {
     setEditMode((prev) => !prev)
   }
 
-  const handleUpdateDate: HandleUpdateDate = (key, dateString) => {
-    setInvoice((prevState) => {
-      if (prevState) return { ...prevState, [key]: dateString }
-    })
-  }
-
-  const handleUpdateBoolean: HandleUpdateBoolean = (key, value) => {
-    setInvoice((prevState) => {
-      if (prevState) return { ...prevState, [key]: value }
-    })
-  }
-
-  const handleUpdateCustomer: HandleUpdateCustomer = (customer) => {
-    setInvoice((prevState) => {
-      if (!customer || !prevState) return
-      return { ...prevState, customer }
-    })
-  }
-
-  const handleUpdateProduct: HandleUpdateProduct = (invoiceLineId, product) => {
-    setInvoice((prevState) => {
-      if (prevState && product) {
-        return {
-          ...prevState,
-          invoice_lines: prevState.invoice_lines.map((line) =>
-            line.id === invoiceLineId
-              ? {
-                  ...line,
-                  product_id: product.id,
-                  product: product,
-                  label: product.label,
-                  vat_rate: product.vat_rate,
-                  unit: product.unit,
-                  price: (
-                    parseFloat(product.unit_price) * line.quantity
-                  ).toString(),
-                  tax: (
-                    parseFloat(product.unit_tax) * line.quantity
-                  ).toString(),
-                }
-              : line
-          ),
-        }
-      }
-    })
-  }
-
-  const handleUpdateQuantity: HandleUpdateQuantity = (
-    invoiceLineId,
-    quantity
-  ) => {
-    setInvoice((prevState) => {
-      if (prevState) {
-        return {
-          ...prevState,
-          invoice_lines: prevState.invoice_lines.map((line) =>
-            line.id === invoiceLineId
-              ? {
-                  ...line,
-                  quantity,
-                  price: (
-                    parseFloat(line.product.unit_price) * line.quantity
-                  ).toString(),
-                  tax: (
-                    parseFloat(line.product.unit_tax) * line.quantity
-                  ).toString(),
-                }
-              : line
-          ),
-        }
-      }
-    })
-  }
-
   const handleAddInvoiceLine = () => {}
 
-  const handleUpdateInvoice = () => {
+  const handleUpdateInvoice = async () => {
     if (!invoice) return
 
     const payload = {
@@ -119,21 +46,27 @@ const InvoiceShow = () => {
       customer_id: invoice.customer_id ?? undefined,
       invoice_lines_attributes: invoice.invoice_lines.map((line) => ({
         ...line,
-        _destroy: line.quantity < 1 ? true : false,
+        _destroy: line.quantity < 1,
       })),
     }
 
-    api.putInvoice(id, { invoice: payload }).then(({ data }) => {
+    try {
+      const { data } = await api.putInvoice(id, { invoice: payload })
       setInvoice(data)
       setEditMode(false)
-    })
+    } catch (error) {
+      console.error('Failed to update invoice:', error)
+    }
   }
 
-  const handleDeleteInvoice = () => {
+  const handleDeleteInvoice = async () => {
     if (window.confirm('Are you sure you want to delete this invoice?')) {
-      api.deleteInvoice(id).then(() => {
+      try {
+        await api.deleteInvoice(id)
         navigate('/')
-      })
+      } catch (error) {
+        console.error('Failed to delete invoice:', error)
+      }
     }
   }
 
