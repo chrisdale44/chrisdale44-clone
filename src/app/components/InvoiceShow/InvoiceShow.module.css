@@ -9,8 +9,11 @@
     margin: 40px 0;    
 }
 
-.unstyledTable td {
-    padding: 0 10px;
+.unstyledTable tbody tr,
+.unstyledTable tbody th,
+.unstyledTable tbody td {
+    border: none;
+    padding: 4px 8px;
 }
 
 .tableRight {
