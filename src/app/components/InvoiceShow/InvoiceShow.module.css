@@ -1,0 +1,24 @@
+.invoiceHeader {
+    margin: 40px 0;
+    text-align: center;
+}
+
+.detailsWrapper {
+    display: flex;
+    justify-content: space-between;
+    margin: 40px 0;    
+}
+
+.unstyledTable td {
+    padding: 0 10px;
+}
+
+.tableRight {
+    text-align: right;
+}
+
+.totalWrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 400px;
+}

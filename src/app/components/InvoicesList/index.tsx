@@ -11,6 +11,7 @@ const InvoicesList = (): React.ReactElement => {
 
   const fetchInvoices = useCallback(async () => {
     const { data } = await api.getInvoices()
+    console.log(data)
     setInvoicesList(data.invoices)
   }, [api])
 
@@ -23,6 +24,9 @@ const InvoicesList = (): React.ReactElement => {
       {
         Header: 'Invoice ID',
         accessor: 'id',
+        Cell: ({ value }: { value: Invoice['id'] }) => (
+          <a href={`/invoice/${value}`}>{value}</a>
+        ),
       },
       {
         Header: 'Customer',
@@ -32,9 +36,11 @@ const InvoicesList = (): React.ReactElement => {
       },
       {
         Header: 'Address',
-        accessor: (row: Invoice) =>
-          row.customer &&
-          `${row.customer.address} ${row.customer?.zip_code} ${row.customer?.city}`,
+        accessor: (row: Invoice) => {
+          if (!row.customer) return
+          const { address, city, zip_code, country_code } = row.customer
+          return `${address}, ${city}, ${zip_code}, ${country_code}`
+        },
       },
       {
         Header: 'Total',
