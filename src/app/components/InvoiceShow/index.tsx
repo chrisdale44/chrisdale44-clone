@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router'
+import { useNavigate } from 'react-router-dom'
 import { useApi } from 'api'
 import { InvoiceContext } from '../../context'
 import { Invoice } from 'types'
@@ -16,11 +17,11 @@ import {
   HandleUpdateProduct,
   HandleUpdateQuantity,
 } from './types'
-import './styles.css'
 
 const InvoiceShow = () => {
   const { id } = useParams<{ id: string }>()
   const api = useApi()
+  const navigate = useNavigate()
   const [invoice, setInvoice] = useState<Invoice>()
   const [editMode, setEditMode] = useState<boolean>(false)
 
@@ -111,15 +112,29 @@ const InvoiceShow = () => {
   const handleAddInvoiceLine = () => {}
 
   const handleUpdateInvoice = () => {
-    api.putInvoice().then(({ data }) => {
-      console.log(data)
+    if (!invoice) return
+
+    const payload = {
+      ...invoice,
+      customer_id: invoice.customer_id ?? undefined,
+      invoice_lines_attributes: invoice.invoice_lines.map((line) => ({
+        ...line,
+        _destroy: line.quantity < 1 ? true : false,
+      })),
+    }
+
+    api.putInvoice(id, { invoice: payload }).then(({ data }) => {
+      setInvoice(data)
+      setEditMode(false)
     })
   }
 
   const handleDeleteInvoice = () => {
-    api.deleteInvoice().then(({ data }) => {
-      console.log(data)
-    })
+    if (window.confirm('Are you sure you want to delete this invoice?')) {
+      api.deleteInvoice(id).then(() => {
+        navigate('/')
+      })
+    }
   }
 
   return invoice ? (
@@ -160,7 +175,7 @@ const InvoiceShow = () => {
           handleDeleteInvoice={handleDeleteInvoice}
         />
 
-        {/* <pre>{JSON.stringify(invoice ?? '', null, 2)}</pre> */}
+        <pre>{JSON.stringify(invoice ?? '', null, 2)}</pre>
       </form>
     </InvoiceContext.Provider>
   ) : null

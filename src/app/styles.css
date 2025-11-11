@@ -16,6 +16,10 @@
     padding: 4px 8px;
 }
 
+.tableWrapper{
+    margin-top: 40px;
+}
+
 .tableRight {
     text-align: right;
 }

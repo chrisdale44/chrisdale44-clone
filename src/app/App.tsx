@@ -4,7 +4,7 @@ import InvoicesList from './components/InvoicesList'
 import InvoiceShow from './components/InvoiceShow'
 
 import 'react-datepicker/dist/react-datepicker.css'
-
+import './styles.css'
 // import GettingStarted from './GettingStarted'
 
 function App() {

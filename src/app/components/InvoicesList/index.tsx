@@ -70,7 +70,11 @@ const InvoicesList = (): React.ReactElement => {
     []
   )
 
-  return <Table columns={columns} data={invoicesList} />
+  return (
+    <div className="tableWrapper">
+      <Table columns={columns} data={invoicesList} />
+    </div>
+  )
 }
 
 export default InvoicesList
