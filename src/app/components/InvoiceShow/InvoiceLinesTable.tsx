@@ -4,16 +4,29 @@ import Table from '../Table'
 import ProductAutocomplete from '../ProductAutocomplete'
 import { InvoiceContext } from 'app/context'
 
-const InvoiceLines = () => {
+type InvoiceLinesProps = {
+  handleUpdateProduct: (invoiceLineId: number, product: Product | null) => void
+  handleUpdateQuantity: (invoiceLineId: number, quantity: number) => void
+}
+
+const InvoiceLinesTable = ({
+  handleUpdateProduct,
+  handleUpdateQuantity,
+}: InvoiceLinesProps) => {
   const { invoice, editMode } = useContext(InvoiceContext)
 
   const columns = [
     {
       Header: 'Product',
       accessor: 'product',
-      Cell: ({ value }: { value: Product }) =>
+      Cell: ({ value, row }: { value: Product; row: any }) =>
         editMode ? (
-          <ProductAutocomplete value={value} onChange={() => {}} />
+          <ProductAutocomplete
+            value={value}
+            onChange={(product) => {
+              if (product) return handleUpdateProduct(row.original.id, product)
+            }}
+          />
         ) : (
           value.label
         ),
@@ -21,18 +34,25 @@ const InvoiceLines = () => {
     {
       Header: 'Quantity',
       accessor: 'quantity',
-      Cell: ({ value }: { value: number }) =>
-        editMode ? (
+      Cell: ({ value, row }: { value: number; row: any }) => {
+        return editMode ? (
           <input
             type="number"
             min="0"
             max="100"
             step="1"
             defaultValue={value}
+            onChange={(e) =>
+              handleUpdateQuantity(
+                row.original.id,
+                parseInt(e.currentTarget.value)
+              )
+            }
           />
         ) : (
           value
-        ),
+        )
+      },
     },
     {
       Header: 'Price',
@@ -58,4 +78,4 @@ const InvoiceLines = () => {
   ) : null
 }
 
-export default InvoiceLines
+export default InvoiceLinesTable

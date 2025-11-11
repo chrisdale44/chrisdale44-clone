@@ -1,0 +1,61 @@
+.invoiceHeader {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.detailsWrapper {
+    display: flex;
+    justify-content: space-between;
+    margin: 40px 0;    
+}
+
+.unstyledTable tbody tr,
+.unstyledTable tbody th,
+.unstyledTable tbody td {
+    border: none;
+    padding: 4px 8px;
+}
+
+.tableRight {
+    text-align: right;
+}
+
+.totalWrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 60px;
+}
+
+.capitalize {
+    text-transform: capitalize;
+}
+
+.stickyFooter {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    background-color: white;
+    border-top: 1px solid grey ;
+    padding: 20px 0;
+}
+
+.edit {
+    background-color: blue;
+    color: white;
+    margin: 0 20px;
+}
+
+.save {
+    background-color: green;
+    color: white;
+}
+
+.delete {
+    background-color: red;
+    color: white;
+    margin: 0 20px;
+}

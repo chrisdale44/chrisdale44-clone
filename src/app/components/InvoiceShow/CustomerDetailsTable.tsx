@@ -1,17 +1,19 @@
 import { useContext } from 'react'
 import { InvoiceContext } from 'app/context'
 import CustomerAutocomplete from '../CustomerAutocomplete'
-import { Customer } from 'types'
-import styles from './InvoiceShow.module.css'
+import { HandleUpdateCustomer } from './types'
 
 type CustomerDetailsProps = {
-  handleCustomerChange: (customer: Customer | null) => Customer | void
+  handleUpdateCustomer: HandleUpdateCustomer
 }
 
-const CustomerDetails = ({ handleCustomerChange }: CustomerDetailsProps) => {
+const CustomerDetailsTable = ({
+  handleUpdateCustomer,
+}: CustomerDetailsProps) => {
   const { invoice, editMode } = useContext(InvoiceContext)
+
   return invoice?.customer ? (
-    <table className={`table ${styles.unstyledTable}`}>
+    <table className="table unstyledTable">
       <tbody>
         <tr>
           <th>Billed to</th>
@@ -19,7 +21,7 @@ const CustomerDetails = ({ handleCustomerChange }: CustomerDetailsProps) => {
             {editMode ? (
               <CustomerAutocomplete
                 value={invoice.customer}
-                onChange={handleCustomerChange}
+                onChange={handleUpdateCustomer}
               />
             ) : (
               `${invoice.customer.first_name} ${invoice.customer.last_name}`
@@ -43,4 +45,4 @@ const CustomerDetails = ({ handleCustomerChange }: CustomerDetailsProps) => {
   ) : null
 }
 
-export default CustomerDetails
+export default CustomerDetailsTable

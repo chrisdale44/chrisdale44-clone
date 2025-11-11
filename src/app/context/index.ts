@@ -3,7 +3,7 @@ import { Invoice } from 'types'
 
 export const InvoiceContext = createContext<{
   invoice: Invoice | null
-  editMode: boolean | null
+  editMode: boolean
 }>({
   invoice: null,
   editMode: false,

@@ -1,13 +1,12 @@
 import { useContext } from 'react'
 import { InvoiceContext } from 'app/context'
 import { calculateTotal, calculateTotalTax } from './utils'
-import styles from './InvoiceShow.module.css'
 
 const InvoiceTotals = () => {
   const { invoice } = useContext(InvoiceContext)
   return invoice ? (
-    <div className={styles.totalWrapper}>
-      <table className={`${styles.unstyledTable} ${styles.tableRight}`}>
+    <div className="totalWrapper">
+      <table className="unstyledTable tableRight">
         <tbody>
           <tr>
             <th>Tax</th>

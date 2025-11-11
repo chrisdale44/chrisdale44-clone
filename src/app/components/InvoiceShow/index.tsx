@@ -2,13 +2,21 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'react-router'
 import { useApi } from 'api'
 import { InvoiceContext } from '../../context'
-import { Invoice, Customer } from 'types'
+import { Invoice } from 'types'
 import InvoiceHeader from './InvoiceHeader'
-import CustomerDetails from './CustomerDetails'
-import InvoiceDetails from './InvoiceDetails'
-import InvoiceLines from './InvoiceLines'
+import CustomerDetailsTable from './CustomerDetailsTable'
+import InvoiceDetailsTable from './InvoiceDetailsTable'
+import InvoiceLinesTable from './InvoiceLinesTable'
 import InvoiceTotals from './InvoiceTotals'
-import styles from './InvoiceShow.module.css'
+import FooterButtons from './FooterButtons'
+import {
+  HandleUpdateBoolean,
+  HandleUpdateDate,
+  HandleUpdateCustomer,
+  HandleUpdateProduct,
+  HandleUpdateQuantity,
+} from './types'
+import './styles.css'
 
 const InvoiceShow = () => {
   const { id } = useParams<{ id: string }>()
@@ -26,49 +34,133 @@ const InvoiceShow = () => {
     setEditMode((prev) => !prev)
   }
 
-  const handleCustomerChange = (customer: Customer | null): Customer | void => {
-    if (!customer) return
-    setInvoice((prev): Invoice | undefined => {
-      if (!prev) {
-        // return { customer }
-        return undefined
-      } else {
-        return { ...prev, customer }
+  const handleUpdateDate: HandleUpdateDate = (key, dateString) => {
+    setInvoice((prevState) => {
+      if (prevState) return { ...prevState, [key]: dateString }
+    })
+  }
+
+  const handleUpdateBoolean: HandleUpdateBoolean = (key, value) => {
+    setInvoice((prevState) => {
+      if (prevState) return { ...prevState, [key]: value }
+    })
+  }
+
+  const handleUpdateCustomer: HandleUpdateCustomer = (customer) => {
+    setInvoice((prevState) => {
+      if (!customer || !prevState) return
+      return { ...prevState, customer }
+    })
+  }
+
+  const handleUpdateProduct: HandleUpdateProduct = (invoiceLineId, product) => {
+    setInvoice((prevState) => {
+      if (prevState && product) {
+        return {
+          ...prevState,
+          invoice_lines: prevState.invoice_lines.map((line) =>
+            line.id === invoiceLineId
+              ? {
+                  ...line,
+                  product_id: product.id,
+                  product: product,
+                  label: product.label,
+                  vat_rate: product.vat_rate,
+                  unit: product.unit,
+                  price: (
+                    parseFloat(product.unit_price) * line.quantity
+                  ).toString(),
+                  tax: (
+                    parseFloat(product.unit_tax) * line.quantity
+                  ).toString(),
+                }
+              : line
+          ),
+        }
       }
     })
   }
 
-  const handleNewRow = () => {}
+  const handleUpdateQuantity: HandleUpdateQuantity = (
+    invoiceLineId,
+    quantity
+  ) => {
+    setInvoice((prevState) => {
+      if (prevState) {
+        return {
+          ...prevState,
+          invoice_lines: prevState.invoice_lines.map((line) =>
+            line.id === invoiceLineId
+              ? {
+                  ...line,
+                  quantity,
+                  price: (
+                    parseFloat(line.product.unit_price) * line.quantity
+                  ).toString(),
+                  tax: (
+                    parseFloat(line.product.unit_tax) * line.quantity
+                  ).toString(),
+                }
+              : line
+          ),
+        }
+      }
+    })
+  }
+
+  const handleAddInvoiceLine = () => {}
+
+  const handleUpdateInvoice = () => {
+    api.putInvoice().then(({ data }) => {
+      console.log(data)
+    })
+  }
+
+  const handleDeleteInvoice = () => {
+    api.deleteInvoice().then(({ data }) => {
+      console.log(data)
+    })
+  }
 
   return invoice ? (
     <InvoiceContext.Provider value={{ invoice, editMode }}>
       <form>
-        <input
-          type="button"
-          onClick={toggleEditMode}
-          value={`Toggle edit mode: ${editMode ? 'on' : 'off'}`}
-        />
-
         <InvoiceHeader />
 
-        <div className={styles.detailsWrapper}>
+        <div className="detailsWrapper">
           <div>
-            <CustomerDetails handleCustomerChange={handleCustomerChange} />
+            <CustomerDetailsTable handleUpdateCustomer={handleUpdateCustomer} />
           </div>
           <div>
-            <InvoiceDetails />
+            <InvoiceDetailsTable
+              handleUpdateDate={handleUpdateDate}
+              handleUpdateBoolean={handleUpdateBoolean}
+            />
           </div>
         </div>
 
-        <InvoiceLines />
+        <InvoiceLinesTable
+          handleUpdateProduct={handleUpdateProduct}
+          handleUpdateQuantity={handleUpdateQuantity}
+        />
 
         {editMode && (
-          <input type="button" onClick={handleNewRow} value={`Add product +`} />
+          <input
+            type="button"
+            onClick={handleAddInvoiceLine}
+            value={`Add product +`}
+          />
         )}
 
         <InvoiceTotals />
 
-        <pre>{JSON.stringify(invoice ?? '', null, 2)}</pre>
+        <FooterButtons
+          toggleEditMode={toggleEditMode}
+          handleUpdateInvoice={handleUpdateInvoice}
+          handleDeleteInvoice={handleDeleteInvoice}
+        />
+
+        {/* <pre>{JSON.stringify(invoice ?? '', null, 2)}</pre> */}
       </form>
     </InvoiceContext.Provider>
   ) : null
