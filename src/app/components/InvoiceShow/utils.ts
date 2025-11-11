@@ -1,4 +1,5 @@
 import { Invoice } from 'types'
+import numeral from 'numeral'
 
 export const calculateTotal = (
   invoice: Invoice,
@@ -9,4 +10,12 @@ export const calculateTotal = (
     total += parseInt(line.product[key]) * line.quantity
   })
   return total
+}
+
+export const formatCurrency = (value: number) => {
+  return numeral(value).format('$0,0.00')
+}
+
+export const formatCurrencyCell = ({ value }: { value: number }) => {
+  return formatCurrency(value)
 }

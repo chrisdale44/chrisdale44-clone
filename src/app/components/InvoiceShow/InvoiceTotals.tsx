@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import { InvoiceContext } from 'app/context'
-import { calculateTotal } from './utils'
+import { calculateTotal, formatCurrency } from './utils'
 
 const InvoiceTotals = () => {
   const { invoice } = useContext(InvoiceContext)
@@ -9,12 +9,12 @@ const InvoiceTotals = () => {
       <table className="unstyledTable tableRight">
         <tbody>
           <tr>
-            <th>Tax</th>
-            <td>{calculateTotal(invoice, 'unit_tax')}</td>
+            <th>Total Tax</th>
+            <td>{formatCurrency(calculateTotal(invoice, 'unit_tax'))}</td>
           </tr>
           <tr>
             <th>Total</th>
-            <td>{calculateTotal(invoice, 'unit_price')}</td>
+            <td>{formatCurrency(calculateTotal(invoice, 'unit_price'))}</td>
           </tr>
         </tbody>
       </table>

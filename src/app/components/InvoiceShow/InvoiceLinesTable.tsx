@@ -1,8 +1,10 @@
 import { useContext } from 'react'
-import { Invoice, Product } from 'types'
+import { Product } from 'types'
 import Table from '../Table'
 import ProductAutocomplete from '../ProductAutocomplete'
 import { InvoiceContext } from 'app/context'
+import { formatCurrencyCell } from './utils'
+import { Components } from 'api/gen/client'
 
 type InvoiceLinesProps = {
   handleUpdateProduct: (invoiceLineId: number, product: Product | null) => void
@@ -57,19 +59,23 @@ const InvoiceLinesTable = ({
     {
       Header: 'Price',
       accessor: 'product.unit_price',
+      Cell: formatCurrencyCell,
     },
     {
       Header: 'Tax',
       accessor: 'product.unit_tax',
+      Cell: formatCurrencyCell,
     },
     {
       Header: 'VAT',
       accessor: 'product.vat_rate',
+      Cell: formatCurrencyCell,
     },
     {
       Header: 'Total',
-      accessor: (originalRow: Invoice['invoice_lines'][0]) =>
+      accessor: (originalRow: Components.Schemas.InvoiceLine) =>
         parseInt(originalRow.product.unit_price) * originalRow.quantity,
+      Cell: formatCurrencyCell,
     },
   ]
 
