@@ -27,7 +27,9 @@ export const useInvoiceHandlers = ({
   }
 
   const handleUpdateCustomer: HandleUpdateCustomer = (customer) => {
-    setInvoice((prev) => (prev && customer ? { ...prev, customer } : prev))
+    setInvoice((prev) =>
+      prev && customer ? { ...prev, customer, customer_id: customer.id } : prev
+    )
   }
 
   const handleUpdateProduct: HandleUpdateProduct = (invoiceLineId, product) => {
