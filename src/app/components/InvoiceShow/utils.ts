@@ -1,5 +1,5 @@
 import { FormEvent } from 'react'
-import { Invoice, InvoiceKeys } from 'types'
+import { Invoice, InvoiceKeys, ProductKeys } from 'types'
 import numeral from 'numeral'
 import { Components } from 'api/gen/client'
 
@@ -18,13 +18,13 @@ export const calculateTotal = (
   return total
 }
 
-export const formatCurrency = (value: number) => {
-  return numeral(value).format('$0,0.00')
-}
+export const formatCurrency = (value: number | string) =>
+  numeral(typeof value === 'string' ? parseInt(value) : value).format('$0,0.00')
 
-export const formatCurrencyCell = ({ value }: { value: number }) => {
-  return formatCurrency(value)
-}
+export const formatCurrencyCell = (
+  row: Components.Schemas.InvoiceLine,
+  key: ProductKeys
+) => (row?.product?.[key] ? formatCurrency(row.product[key]) : '')
 
 export const validateForm = (
   e: FormEvent<HTMLFormElement>,

@@ -1,10 +1,11 @@
 import { useContext } from 'react'
 import { Product } from 'types'
-import Table from '../Table'
+import SortableTable from '../SortableTable'
 import ProductAutocomplete from '../ProductAutocomplete'
 import { InvoiceContext } from 'app/context'
-import { formatCurrencyCell } from './utils'
+import { formatCurrency, formatCurrencyCell } from './utils'
 import { Components } from 'api/gen/client'
+import { Row } from 'react-bootstrap'
 
 type InvoiceLinesProps = {
   handleUpdateProduct: (invoiceLineId: number, product: Product | null) => void
@@ -15,28 +16,33 @@ const InvoiceLinesTable = ({
   handleUpdateProduct,
   handleUpdateQuantity,
 }: InvoiceLinesProps) => {
-  const { invoice, editMode } = useContext(InvoiceContext)
+  const { invoice, newInvoiceLines, editMode } = useContext(InvoiceContext)
 
   const columns = [
     {
       Header: 'Product',
       accessor: 'product',
-      Cell: ({ value, row }: { value: Product; row: any }) =>
+      Cell: ({ value, row }: { value: Product | undefined; row: any }) =>
         editMode && !invoice?.finalized ? (
           <ProductAutocomplete
-            value={value}
+            value={value ?? null}
             onChange={(product) => {
-              if (product) return handleUpdateProduct(row.original.id, product)
+              if (row.original.id) {
+                return handleUpdateProduct(row.original.id, product)
+              } else {
+              }
             }}
           />
-        ) : (
+        ) : value ? (
           value.label
+        ) : (
+          ''
         ),
     },
     {
       Header: 'Quantity',
       accessor: 'quantity',
-      Cell: ({ value, row }: { value: number; row: any }) => {
+      Cell: ({ value, row }: { value: number | undefined; row: any }) => {
         return editMode && !invoice?.finalized ? (
           <input
             type="number"
@@ -44,43 +50,50 @@ const InvoiceLinesTable = ({
             max="100"
             step="1"
             defaultValue={value}
-            onChange={(e) =>
-              handleUpdateQuantity(
-                row.original.id,
-                parseInt(e.currentTarget.value)
-              )
-            }
+            onChange={(e) => {
+              if (row.original.id) {
+                handleUpdateQuantity(
+                  row.original.id,
+                  parseInt(e.currentTarget.value)
+                )
+              } else {
+              }
+            }}
           />
         ) : (
-          value
+          value || ''
         )
       },
     },
     {
       Header: 'Price',
-      accessor: 'product.unit_price',
-      Cell: formatCurrencyCell,
+      accessor: (row: Components.Schemas.InvoiceLine) =>
+        formatCurrencyCell(row, 'unit_price'),
     },
     {
       Header: 'Tax',
-      accessor: 'product.unit_tax',
-      Cell: formatCurrencyCell,
+      accessor: (row: Components.Schemas.InvoiceLine) =>
+        formatCurrencyCell(row, 'unit_tax'),
     },
     {
       Header: 'VAT',
-      accessor: 'product.vat_rate',
-      Cell: formatCurrencyCell,
+      accessor: (row: Components.Schemas.InvoiceLine) =>
+        formatCurrencyCell(row, 'vat_rate'),
     },
     {
       Header: 'Total',
-      accessor: (originalRow: Components.Schemas.InvoiceLine) =>
-        parseInt(originalRow.product.unit_price) * originalRow.quantity,
-      Cell: formatCurrencyCell,
+      accessor: (row: Components.Schemas.InvoiceLine) =>
+        row?.product?.vat_rate && row?.quantity
+          ? formatCurrency(parseInt(row.product.unit_price) * row.quantity)
+          : '',
     },
   ]
 
   return invoice?.invoice_lines ? (
-    <Table columns={columns} data={invoice.invoice_lines} />
+    <SortableTable
+      columns={columns}
+      data={[...invoice.invoice_lines, ...newInvoiceLines]}
+    />
   ) : null
 }
 

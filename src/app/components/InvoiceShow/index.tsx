@@ -10,13 +10,14 @@ import InvoiceLinesTable from './InvoiceLinesTable'
 import InvoiceTotals from './InvoiceTotals'
 import FooterButtons from './FooterButtons'
 import { useInvoiceHandlers } from 'app/hooks/useInvoiceHandlers'
-import { Invoice } from 'types'
-import { emptyInvoice } from './constants'
+import { emptyInvoice, emptyInvoiceLine } from './constants'
 import {
   validateForm,
   generateInvoiceUpdatePayload,
   generateInvoiceCreatePayload,
 } from './utils'
+
+import { Invoice, NewInvoiceLine } from 'types'
 
 const InvoiceShow = () => {
   const { id } = useParams<{ id: string }>()
@@ -24,6 +25,7 @@ const InvoiceShow = () => {
   const navigate = useNavigate()
   const [invoice, setInvoice] = useState<Invoice>()
   const [editMode, setEditMode] = useState<boolean>(false)
+  const [newInvoiceLines, setNewInvoiceLines] = useState<NewInvoiceLine[]>([])
   const {
     handleUpdateDate,
     handleUpdateBoolean,
@@ -47,7 +49,14 @@ const InvoiceShow = () => {
     setEditMode((prev) => !prev)
   }
 
-  const handleAddInvoiceLine = () => {}
+  const handleAddInvoiceLine = () => {
+    setNewInvoiceLines((prev) => [
+      ...prev,
+      {
+        ...emptyInvoiceLine,
+      },
+    ])
+  }
 
   const onValidSubmit = async () => {
     if (!invoice) return
@@ -86,7 +95,13 @@ const InvoiceShow = () => {
   }
 
   return invoice ? (
-    <InvoiceContext.Provider value={{ invoice, editMode }}>
+    <InvoiceContext.Provider
+      value={{
+        invoice,
+        newInvoiceLines,
+        editMode,
+      }}
+    >
       <form onSubmit={(e) => validateForm(e, invoice, onValidSubmit)}>
         <InvoiceHeader />
 

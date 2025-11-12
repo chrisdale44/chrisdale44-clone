@@ -2,7 +2,7 @@ import React from 'react'
 import { useApi } from 'api'
 import { Invoice } from 'types'
 import { useEffect, useCallback, useState } from 'react'
-import Table from '../Table'
+import SortableTable from '../SortableTable'
 
 const InvoicesList = (): React.ReactElement => {
   const api = useApi()
@@ -72,7 +72,7 @@ const InvoicesList = (): React.ReactElement => {
 
   return (
     <div className="tableWrapper">
-      <Table columns={columns} data={invoicesList} />
+      <SortableTable columns={columns} data={invoicesList} />
     </div>
   )
 }

@@ -1,6 +1,9 @@
+import { Invoice } from 'types'
+
 export const YES = 'yes'
 export const NO = 'no'
-export const emptyInvoice = {
+
+export const emptyInvoice: Invoice = {
   id: 0,
   customer_id: null,
   finalized: false,
@@ -11,4 +14,8 @@ export const emptyInvoice = {
   tax: null,
   invoice_lines: [],
   customer: undefined,
+}
+
+export const emptyInvoiceLine = {
+  quantity: 0,
 }

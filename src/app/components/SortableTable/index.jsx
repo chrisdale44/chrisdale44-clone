@@ -1,6 +1,6 @@
 import { useTable, useSortBy } from 'react-table'
 
-function Table({ columns, data }) {
+function SortableTable({ columns, data }) {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable(
       {
@@ -42,4 +42,4 @@ function Table({ columns, data }) {
   )
 }
 
-export default Table
+export default SortableTable

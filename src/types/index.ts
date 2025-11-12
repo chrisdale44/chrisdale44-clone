@@ -1,4 +1,4 @@
-import { OperationMethods } from 'api/gen/client'
+import { OperationMethods, Components } from 'api/gen/client'
 import { Awaited } from './helpers'
 
 export type Invoice = Awaited<
@@ -28,4 +28,7 @@ export type HandleUpdateQuantity = (
   quantity: number
 ) => void
 
+export type NewInvoiceLine = Partial<Components.Schemas.InvoiceLine>
+
 export type InvoiceKeys = keyof Invoice
+export type ProductKeys = keyof Components.Schemas.Product
