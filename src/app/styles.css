@@ -17,7 +17,11 @@
 }
 
 .tableWrapper{
-    margin-top: 40px;
+    margin: 20px 0;
+}
+
+.newInvoice {
+    margin-bottom: 20px;
 }
 
 .tableRight {

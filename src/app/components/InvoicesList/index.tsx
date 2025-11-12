@@ -2,10 +2,12 @@ import React from 'react'
 import { useApi } from 'api'
 import { Invoice } from 'types'
 import { useEffect, useCallback, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import SortableTable from '../SortableTable'
 
 const InvoicesList = (): React.ReactElement => {
   const api = useApi()
+  const navigate = useNavigate()
 
   const [invoicesList, setInvoicesList] = useState<Invoice[]>([])
 
@@ -72,6 +74,9 @@ const InvoicesList = (): React.ReactElement => {
 
   return (
     <div className="tableWrapper">
+      <button onClick={() => navigate('/invoice')} className="newInvoice">
+        Create new invoice
+      </button>
       <SortableTable columns={columns} data={invoicesList} />
     </div>
   )
