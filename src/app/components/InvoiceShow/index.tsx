@@ -65,28 +65,26 @@ const InvoiceShow = () => {
     if (id) {
       try {
         const payload = generateInvoiceUpdatePayload(invoice, newInvoiceLines)
-        console.log(payload)
         const { data } = await api.putInvoice(id, {
           invoice: payload,
         })
         setInvoice(data)
-        setEditMode(false)
-        setNewInvoiceLines([])
       } catch (error) {
         console.error('Failed to update invoice:', error)
       }
     } else {
       try {
         const payload = generateInvoiceCreatePayload(invoice, newInvoiceLines)
-        console.log(payload)
         const { data } = await api.postInvoices(null, {
           invoice: payload,
         })
-        navigate(`/invoices/${data.id}`)
+        navigate(`/invoice/${data.id}`)
       } catch (error) {
         console.error('Failed to create new invoice:', error)
       }
     }
+    setEditMode(false)
+    setNewInvoiceLines([])
   }
 
   const handleDeleteInvoice = async () => {
@@ -108,6 +106,9 @@ const InvoiceShow = () => {
         editMode,
       }}
     >
+      <button onClick={() => navigate('/')} className="topNavButton">
+        Back
+      </button>
       <form onSubmit={(e) => validateForm(e, invoice, onValidSubmit)}>
         <InvoiceHeader />
 

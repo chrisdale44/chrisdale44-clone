@@ -74,7 +74,7 @@ const InvoicesList = (): React.ReactElement => {
 
   return (
     <div className="tableWrapper">
-      <button onClick={() => navigate('/invoice')} className="newInvoice">
+      <button onClick={() => navigate('/invoice')} className="topNavButton">
         Create new invoice
       </button>
       <SortableTable columns={columns} data={invoicesList} />
