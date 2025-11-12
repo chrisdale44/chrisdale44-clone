@@ -13,7 +13,6 @@ const InvoicesList = (): React.ReactElement => {
 
   const fetchInvoices = useCallback(async () => {
     const { data } = await api.getInvoices()
-    console.log(data)
     setInvoicesList(data.invoices)
   }, [api])
 

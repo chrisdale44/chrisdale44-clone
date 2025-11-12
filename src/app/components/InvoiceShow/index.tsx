@@ -59,7 +59,7 @@ const InvoiceShow = () => {
     ])
   }
 
-  const onValidSubmit = async () => {
+  const submitForm = async () => {
     if (!invoice) return
 
     if (id) {
@@ -87,6 +87,14 @@ const InvoiceShow = () => {
     setNewInvoiceLines([])
   }
 
+  const handleSaveInvoice = () => {
+    if (!invoice) return
+
+    if (validateForm(invoice)) {
+      submitForm()
+    }
+  }
+
   const handleDeleteInvoice = async () => {
     if (window.confirm('Are you sure you want to delete this invoice?')) {
       try {
@@ -109,7 +117,7 @@ const InvoiceShow = () => {
       <button onClick={() => navigate('/')} className="topNavButton">
         Back
       </button>
-      <form onSubmit={(e) => validateForm(e, invoice, onValidSubmit)}>
+      <form>
         <InvoiceHeader />
 
         <div className="detailsWrapper">
@@ -141,6 +149,7 @@ const InvoiceShow = () => {
 
         <FooterButtons
           toggleEditMode={toggleEditMode}
+          handleSaveInvoice={handleSaveInvoice}
           handleDeleteInvoice={handleDeleteInvoice}
         />
 

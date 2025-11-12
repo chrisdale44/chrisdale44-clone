@@ -1,12 +1,6 @@
-import { FormEvent } from 'react'
 import { Invoice, InvoiceKeys } from 'types'
 
-export const validateForm = (
-  e: FormEvent<HTMLFormElement>,
-  invoice: Invoice,
-  onValid: () => void
-) => {
-  e.preventDefault()
+export const validateForm = (invoice: Invoice) => {
   const requiredFields: InvoiceKeys[] = ['customer_id']
   const invalidFields = []
 
@@ -17,5 +11,6 @@ export const validateForm = (
     }
   })
 
-  if (!invalidFields.length) onValid()
+  if (!invalidFields.length) return true
+  return false
 }
