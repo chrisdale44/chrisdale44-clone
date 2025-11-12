@@ -10,7 +10,7 @@ import InvoiceLinesTable from './InvoiceLinesTable'
 import InvoiceTotals from './InvoiceTotals'
 import FooterButtons from './FooterButtons'
 import { useInvoiceHandlers } from 'app/hooks/useInvoiceHandlers'
-import { emptyInvoice, emptyInvoiceLine } from './constants'
+import { emptyInvoice, emptyInvoiceLine } from '../../constants'
 import {
   validateForm,
   generateInvoiceUpdatePayload,
