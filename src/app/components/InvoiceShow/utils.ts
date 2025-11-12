@@ -1,5 +1,5 @@
 import { FormEvent } from 'react'
-import { Invoice, InvoiceKeys, ProductKeys } from 'types'
+import { Invoice, InvoiceKeys, ProductKeys, NewInvoiceLine } from 'types'
 import numeral from 'numeral'
 import { Components } from 'api/gen/client'
 
@@ -8,12 +8,13 @@ export const formatDate = (date: Date) => {
 }
 
 export const calculateTotal = (
-  invoice: Invoice,
+  invoiceLines: (Components.Schemas.InvoiceLine | NewInvoiceLine)[],
   key: 'unit_tax' | 'unit_price'
 ) => {
   let total = 0
-  invoice.invoice_lines.forEach((line) => {
-    total += parseInt(line.product[key]) * line.quantity
+  invoiceLines.forEach((line) => {
+    if (line.product && line.quantity)
+      total += parseInt(line.product[key]) * line.quantity
   })
   return total
 }
