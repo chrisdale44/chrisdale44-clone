@@ -11,6 +11,12 @@ import InvoiceTotals from './InvoiceTotals'
 import FooterButtons from './FooterButtons'
 import { useInvoiceHandlers } from 'app/hooks/useInvoiceHandlers'
 import { Invoice } from 'types'
+import { emptyInvoice } from './constants'
+import {
+  validateForm,
+  generateInvoiceUpdatePayload,
+  generateInvoiceCreatePayload,
+} from './utils'
 
 const InvoiceShow = () => {
   const { id } = useParams<{ id: string }>()
@@ -27,9 +33,14 @@ const InvoiceShow = () => {
   } = useInvoiceHandlers(setInvoice)
 
   useEffect(() => {
-    api.getInvoice(id).then(({ data }) => {
-      setInvoice(data)
-    })
+    if (id) {
+      api.getInvoice(id).then(({ data }) => {
+        setInvoice(data)
+      })
+    } else {
+      setInvoice(emptyInvoice)
+      setEditMode(true)
+    }
   }, [api, id])
 
   const toggleEditMode = () => {
@@ -38,24 +49,28 @@ const InvoiceShow = () => {
 
   const handleAddInvoiceLine = () => {}
 
-  const handleUpdateInvoice = async () => {
+  const onValidSubmit = async () => {
     if (!invoice) return
 
-    const payload = {
-      ...invoice,
-      customer_id: invoice.customer_id ?? undefined,
-      invoice_lines_attributes: invoice.invoice_lines.map((line) => ({
-        ...line,
-        _destroy: line.quantity < 1,
-      })),
-    }
-
-    try {
-      const { data } = await api.putInvoice(id, { invoice: payload })
-      setInvoice(data)
-      setEditMode(false)
-    } catch (error) {
-      console.error('Failed to update invoice:', error)
+    if (id) {
+      try {
+        const { data } = await api.putInvoice(id, {
+          invoice: generateInvoiceUpdatePayload(invoice),
+        })
+        setInvoice(data)
+        setEditMode(false)
+      } catch (error) {
+        console.error('Failed to update invoice:', error)
+      }
+    } else {
+      try {
+        const { data } = await api.postInvoices(null, {
+          invoice: generateInvoiceCreatePayload(invoice),
+        })
+        navigate(`/invoices/${data.id}`)
+      } catch (error) {
+        console.error('Failed to create new invoice:', error)
+      }
     }
   }
 
@@ -72,7 +87,7 @@ const InvoiceShow = () => {
 
   return invoice ? (
     <InvoiceContext.Provider value={{ invoice, editMode }}>
-      <form>
+      <form onSubmit={(e) => validateForm(e, invoice, onValidSubmit)}>
         <InvoiceHeader />
 
         <div className="detailsWrapper">
@@ -104,7 +119,6 @@ const InvoiceShow = () => {
 
         <FooterButtons
           toggleEditMode={toggleEditMode}
-          handleUpdateInvoice={handleUpdateInvoice}
           handleDeleteInvoice={handleDeleteInvoice}
         />
 

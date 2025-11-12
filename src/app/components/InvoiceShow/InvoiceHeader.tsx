@@ -3,9 +3,11 @@ import { InvoiceContext } from 'app/context'
 
 const InvoiceHeader = () => {
   const { invoice } = useContext(InvoiceContext)
-  return invoice?.id ? (
-    <h1 className="invoiceHeader">Invoice #{invoice.id}</h1>
-  ) : null
+  return (
+    <h1 className="invoiceHeader">
+      {invoice?.id ? `Invoice #${invoice.id}` : `Create New Invoice`}
+    </h1>
+  )
 }
 
 export default InvoiceHeader

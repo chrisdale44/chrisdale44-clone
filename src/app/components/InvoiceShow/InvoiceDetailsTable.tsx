@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import DatePicker from 'react-datepicker'
 import { InvoiceContext } from 'app/context'
-import { HandleUpdateDate, HandleUpdateBoolean } from './types'
+import { HandleUpdateDate, HandleUpdateBoolean } from 'types'
 import { YES, NO } from './constants'
 import { formatDate } from './utils'
 

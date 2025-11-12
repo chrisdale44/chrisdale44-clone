@@ -3,13 +3,11 @@ import { useContext } from 'react'
 
 type FooterButtonsProps = {
   toggleEditMode: () => void
-  handleUpdateInvoice: () => void
   handleDeleteInvoice: () => void
 }
 
 const FooterButtons = ({
   toggleEditMode,
-  handleUpdateInvoice,
   handleDeleteInvoice,
 }: FooterButtonsProps) => {
   const { editMode } = useContext(InvoiceContext)
@@ -24,12 +22,7 @@ const FooterButtons = ({
       />
       {editMode && (
         <div>
-          <input
-            type="button"
-            onClick={handleUpdateInvoice}
-            value={`Save changes`}
-            className="save"
-          />
+          <input type="submit" value={`Save changes`} className="save" />
           <input
             type="button"
             onClick={handleDeleteInvoice}

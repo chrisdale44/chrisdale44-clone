@@ -27,3 +27,5 @@ export type HandleUpdateQuantity = (
   invoiceLineId: number,
   quantity: number
 ) => void
+
+export type InvoiceKeys = keyof Invoice
