@@ -10,7 +10,7 @@ const FooterButtons = ({
   toggleEditMode,
   handleDeleteInvoice,
 }: FooterButtonsProps) => {
-  const { editMode } = useContext(InvoiceContext)
+  const { invoice, editMode } = useContext(InvoiceContext)
 
   return (
     <div className="stickyFooter">
@@ -20,17 +20,19 @@ const FooterButtons = ({
         value={`Toggle edit mode: ${editMode ? 'on' : 'off'}`}
         className="edit"
       />
-      {editMode && (
+      {editMode ? (
         <div>
           <input type="submit" value={`Save changes`} className="save" />
-          <input
-            type="button"
-            onClick={handleDeleteInvoice}
-            value={`Delete invoice`}
-            className="delete"
-          />
+          {invoice?.id ? (
+            <input
+              type="button"
+              onClick={handleDeleteInvoice}
+              value={`Delete invoice`}
+              className="delete"
+            />
+          ) : null}
         </div>
-      )}
+      ) : null}
     </div>
   )
 }

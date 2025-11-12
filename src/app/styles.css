@@ -48,13 +48,12 @@
     gap: 10px;
     background-color: white;
     border-top: 1px solid grey ;
-    padding: 20px 0;
+    padding: 20px;
 }
 
 .edit {
     background-color: blue;
     color: white;
-    margin: 0 20px;
 }
 
 .save {
@@ -65,5 +64,5 @@
 .delete {
     background-color: red;
     color: white;
-    margin: 0 20px;
+    margin-left: 20px;
 }
