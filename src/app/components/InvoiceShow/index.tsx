@@ -64,18 +64,23 @@ const InvoiceShow = () => {
 
     if (id) {
       try {
+        const payload = generateInvoiceUpdatePayload(invoice, newInvoiceLines)
+        console.log(payload)
         const { data } = await api.putInvoice(id, {
-          invoice: generateInvoiceUpdatePayload(invoice),
+          invoice: payload,
         })
         setInvoice(data)
         setEditMode(false)
+        setNewInvoiceLines([])
       } catch (error) {
         console.error('Failed to update invoice:', error)
       }
     } else {
       try {
+        const payload = generateInvoiceCreatePayload(invoice, newInvoiceLines)
+        console.log(payload)
         const { data } = await api.postInvoices(null, {
-          invoice: generateInvoiceCreatePayload(invoice),
+          invoice: payload,
         })
         navigate(`/invoices/${data.id}`)
       } catch (error) {
@@ -138,7 +143,7 @@ const InvoiceShow = () => {
           handleDeleteInvoice={handleDeleteInvoice}
         />
 
-        <pre>{JSON.stringify(invoice ?? '', null, 2)}</pre>
+        {/* <pre>{JSON.stringify(invoice ?? '', null, 2)}</pre> */}
       </form>
     </InvoiceContext.Provider>
   ) : null
