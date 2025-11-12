@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import { InvoiceContext } from 'app/context'
-import { calculateTotal, formatCurrency } from './utils'
+import { calculateTotal, formatCurrency } from '../../utils'
 
 const InvoiceTotals = () => {
   const { invoice, newInvoiceLines } = useContext(InvoiceContext)

@@ -15,7 +15,7 @@ import {
   validateForm,
   generateInvoiceUpdatePayload,
   generateInvoiceCreatePayload,
-} from './utils'
+} from '../../utils'
 
 import { Invoice, NewInvoiceLine } from 'types'
 

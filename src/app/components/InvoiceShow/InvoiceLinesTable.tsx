@@ -3,7 +3,7 @@ import { Product } from 'types'
 import SortableTable from '../SortableTable'
 import ProductAutocomplete from '../ProductAutocomplete'
 import { InvoiceContext } from 'app/context'
-import { formatCurrency, formatCurrencyCell } from './utils'
+import { formatCurrency, formatCurrencyCell } from '../../utils'
 import { Components } from 'api/gen/client'
 
 type InvoiceLinesProps = {
