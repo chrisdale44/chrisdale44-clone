@@ -5,11 +5,19 @@ import {
   HandleUpdateProduct,
   HandleUpdateQuantity,
 } from 'types'
-import { Invoice } from 'types'
+import { Invoice, NewInvoiceLine } from 'types'
 
-export const useInvoiceHandlers = (
+type useInvoiceHandlersProps = {
   setInvoice: React.Dispatch<React.SetStateAction<Invoice | undefined>>
-) => {
+  setNewInvoiceLines: React.Dispatch<React.SetStateAction<NewInvoiceLine[]>>
+  newInvoiceLines: NewInvoiceLine[]
+}
+
+export const useInvoiceHandlers = ({
+  setInvoice,
+  setNewInvoiceLines,
+  newInvoiceLines,
+}: useInvoiceHandlersProps) => {
   const handleUpdateDate: HandleUpdateDate = (key, dateString) => {
     setInvoice((prev) => (prev ? { ...prev, [key]: dateString } : prev))
   }
@@ -23,54 +31,64 @@ export const useInvoiceHandlers = (
   }
 
   const handleUpdateProduct: HandleUpdateProduct = (invoiceLineId, product) => {
-    setInvoice((prev) => {
-      if (!prev || !product) return prev
-      return {
-        ...prev,
-        invoice_lines: prev.invoice_lines.map((line) =>
-          line.id === invoiceLineId
-            ? {
-                ...line,
-                product_id: product.id,
-                product: product,
-                label: product.label,
-                vat_rate: product.vat_rate,
-                unit: product.unit,
-                price: (
-                  parseFloat(product.unit_price) * line.quantity
-                ).toString(),
-                tax: (parseFloat(product.unit_tax) * line.quantity).toString(),
-              }
-            : line
-        ),
-      }
-    })
+    if (!product) return
+
+    const updateLine = (line: any) =>
+      line.id === invoiceLineId
+        ? {
+            ...line,
+            product_id: product.id,
+            product,
+            label: product.label,
+            vat_rate: product.vat_rate,
+            unit: product.unit,
+            price: line.quantity
+              ? (parseFloat(product.unit_price) * line.quantity).toString()
+              : undefined,
+            tax: line.quantity
+              ? (parseFloat(product.unit_tax) * line.quantity).toString()
+              : undefined,
+          }
+        : line
+
+    if (newInvoiceLines.some((line) => line.id === invoiceLineId)) {
+      setNewInvoiceLines((prev) => prev.map(updateLine))
+    } else {
+      setInvoice((prev) =>
+        prev
+          ? { ...prev, invoice_lines: prev.invoice_lines.map(updateLine) }
+          : prev
+      )
+    }
   }
 
   const handleUpdateQuantity: HandleUpdateQuantity = (
     invoiceLineId,
     quantity
   ) => {
-    setInvoice((prev) => {
-      if (!prev) return prev
-      return {
-        ...prev,
-        invoice_lines: prev.invoice_lines.map((line) =>
-          line.id === invoiceLineId
-            ? {
-                ...line,
-                quantity,
-                price: (
-                  parseFloat(line.product.unit_price) * line.quantity
-                ).toString(),
-                tax: (
-                  parseFloat(line.product.unit_tax) * line.quantity
-                ).toString(),
-              }
-            : line
-        ),
-      }
-    })
+    const updateLine = (line: any) =>
+      line.id === invoiceLineId
+        ? {
+            ...line,
+            quantity,
+            price: line.product
+              ? (parseFloat(line.product.unit_price) * quantity).toString()
+              : undefined,
+            tax: line.product
+              ? (parseFloat(line.product.unit_tax) * quantity).toString()
+              : undefined,
+          }
+        : line
+
+    if (newInvoiceLines.some((line) => line.id === invoiceLineId)) {
+      setNewInvoiceLines((prev) => prev.map(updateLine))
+    } else {
+      setInvoice((prev) =>
+        prev
+          ? { ...prev, invoice_lines: prev.invoice_lines.map(updateLine) }
+          : prev
+      )
+    }
   }
 
   return {

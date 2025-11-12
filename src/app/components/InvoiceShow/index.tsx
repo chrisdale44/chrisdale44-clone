@@ -32,7 +32,7 @@ const InvoiceShow = () => {
     handleUpdateCustomer,
     handleUpdateProduct,
     handleUpdateQuantity,
-  } = useInvoiceHandlers(setInvoice)
+  } = useInvoiceHandlers({ setInvoice, setNewInvoiceLines, newInvoiceLines })
 
   useEffect(() => {
     if (id) {
@@ -54,6 +54,7 @@ const InvoiceShow = () => {
       ...prev,
       {
         ...emptyInvoiceLine,
+        id: Date.now(),
       },
     ])
   }

@@ -5,7 +5,6 @@ import ProductAutocomplete from '../ProductAutocomplete'
 import { InvoiceContext } from 'app/context'
 import { formatCurrency, formatCurrencyCell } from './utils'
 import { Components } from 'api/gen/client'
-import { Row } from 'react-bootstrap'
 
 type InvoiceLinesProps = {
   handleUpdateProduct: (invoiceLineId: number, product: Product | null) => void
@@ -27,10 +26,7 @@ const InvoiceLinesTable = ({
           <ProductAutocomplete
             value={value ?? null}
             onChange={(product) => {
-              if (row.original.id) {
-                return handleUpdateProduct(row.original.id, product)
-              } else {
-              }
+              handleUpdateProduct(row?.original?.id, product)
             }}
           />
         ) : value ? (
@@ -51,13 +47,10 @@ const InvoiceLinesTable = ({
             step="1"
             defaultValue={value}
             onChange={(e) => {
-              if (row.original.id) {
-                handleUpdateQuantity(
-                  row.original.id,
-                  parseInt(e.currentTarget.value)
-                )
-              } else {
-              }
+              handleUpdateQuantity(
+                row?.original?.id,
+                parseInt(e.currentTarget.value)
+              )
             }}
           />
         ) : (
