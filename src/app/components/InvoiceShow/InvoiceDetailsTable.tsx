@@ -19,40 +19,38 @@ const InvoiceDetailsTable = ({
   return invoice ? (
     <table className="table tableRight unstyledTable">
       <tbody>
-        {invoice?.date && (
-          <tr>
-            <th>Invoice date</th>
-            <td>
-              {editMode && !invoice?.finalized ? (
-                <DatePicker
-                  selected={new Date(invoice.date)}
-                  onChange={(date) => {
-                    if (date) handleUpdateDate('date', formatDate(date))
-                  }}
-                />
-              ) : (
-                invoice.date
-              )}
-            </td>
-          </tr>
-        )}
-        {invoice?.deadline && (
-          <tr>
-            <th>Deadline</th>
-            <td>
-              {editMode && !invoice?.finalized ? (
-                <DatePicker
-                  selected={new Date(invoice.deadline)}
-                  onChange={(date) => {
-                    if (date) handleUpdateDate('deadline', formatDate(date))
-                  }}
-                />
-              ) : (
-                invoice.deadline
-              )}
-            </td>
-          </tr>
-        )}
+        <tr>
+          <th>Invoice date</th>
+          <td>
+            {editMode && !invoice?.finalized ? (
+              <DatePicker
+                selected={invoice.date ? new Date(invoice.date) : null}
+                onChange={(date) => {
+                  if (date) handleUpdateDate('date', formatDate(date))
+                }}
+              />
+            ) : (
+              invoice.date
+            )}
+          </td>
+        </tr>
+
+        <tr>
+          <th>Deadline</th>
+          <td>
+            {editMode && !invoice?.finalized ? (
+              <DatePicker
+                selected={invoice.deadline ? new Date(invoice.deadline) : null}
+                onChange={(date) => {
+                  if (date) handleUpdateDate('deadline', formatDate(date))
+                }}
+              />
+            ) : (
+              invoice.deadline
+            )}
+          </td>
+        </tr>
+
         <tr>
           <th>Finalized</th>
           <td className="capitalize">
