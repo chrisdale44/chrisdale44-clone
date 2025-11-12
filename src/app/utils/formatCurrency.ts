@@ -3,7 +3,9 @@ import numeral from 'numeral'
 import { Components } from 'api/gen/client'
 
 export const formatCurrency = (value: number | string): string =>
-  numeral(typeof value === 'string' ? parseInt(value) : value).format('$0,0.00')
+  numeral(typeof value === 'string' ? parseFloat(value) : value).format(
+    '$0,0.00'
+  )
 
 export const formatCurrencyCell = (
   row: Components.Schemas.InvoiceLine,
